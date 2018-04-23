@@ -136,16 +136,18 @@ function readOrWriteADay(){
 	
 	if ls "$dayToRead-$monthToRead-$yearToRead-Journal.txt" >&1;
 	then
-		dialog --clear  --backtitle $appName --title "Information" --msgbox "Entery exists. Ready for reading and editing." 20 50
+		dialog --clear  --backtitle $appName --title "Information" --msgbox "Entry exists. You can read and edit the entry." 20 50
+		
+		file="$dayToRead-$monthToRead-$yearToRead-Journal.txt"
 
-		dialog --backtitle $appName --title "$dayToRead/$monthToRead/$yearToRead" --editbox "$dayToRead-$monthToRead-$yearToRead-Journal.txt" 50 80   2> "$dayToRead-$monthToRead-$yearToRead-Journal.txt"
-		dialog --clear  --backtitle $appName --title "$dayToRead/$monthToRead/$yearToRead" --msgbox "Saved on $dayToRead-$monthToRead-$yearToRead-Journal.txt" 20 50
+		dialog --backtitle $appName --title "$dayToRead/$monthToRead/$yearToRead" --editbox "$file" 50 80 2> $file
+		dialog --clear  --backtitle $appName --title "$dayToRead/$monthToRead/$yearToRead" --msgbox "Saved on $file" 20 50
 	else
 		dialog --clear  --backtitle $appName --title "Information" --msgbox "Entery doesn't exist. Creating one." 20 50
-
-		> "$dayToRead-$monthToRead-$yearToRead-Journal.txt"
-		dialog --clear  --backtitle $appName --title "$dayToRead/$monthToRead/$yearToRead" --editbox "$dayToRead-$monthToRead-$YearToRead-Journal.txt" 80 80   2> "$dayToRead-$monthToRead-$yearToRead-Journal.txt"
-		dialog --clear  --backtitle $appName --title "$dayToRead/$monthToRead/$yearToRead" --msgbox "Saved on $dayToRead-$monthToRead-$yearToRead-Journal.txt" 20 50
+		file="$dayToRead-$monthToRead-$yearToRead-Journal.txt"
+		> $file
+		dialog --clear  --backtitle $appName --title "$dayToRead/$monthToRead/$yearToRead" --editbox $file 80 80   2> $file
+		dialog --clear  --backtitle $appName --title "$dayToRead/$monthToRead/$yearToRead" --msgbox "Saved on $file" 20 50
 	fi
 }
 
