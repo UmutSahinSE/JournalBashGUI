@@ -18,7 +18,7 @@ function writeForToday(){
 	day=$(date | awk '{print $3;}' )
 	month=$(LANG=en_us_88591; date +"%b")
 	year=$(date| awk '{print $6;}' ) 
-        entryFile="$day-$month-$year-Journal.txt"
+       
 	if [[ $month == "Jan" ]] 
 	then month=1
 	elif [[ $month == "Fan" ]] 
@@ -45,6 +45,7 @@ function writeForToday(){
 	then month=12 
 	fi
 
+	entryFile="$day-$month-$year-Journal.txt"
 	> $entryFile
 	dialog --clear  --backtitle $appName --title "$day/$month/$year" --editbox $entryFile 80 80   2> $entryFile
 	dialog --clear  --backtitle $appName --title "$day/$month/$year" --msgbox "Saved on $entryFile" 20 50
@@ -53,9 +54,6 @@ function writeForToday(){
 
                         
 function readOrWriteADay(){
-	dayToRead=-1
-	monthToRead=-1
-	yearToRead=-1
 	
 	dialog --clear  --backtitle $appName --title "Information" --msgbox "Enter a date. If an entry for chosen day doesn't exist, a new entry will be created.\nIf entery for chosen day exists, you can write or edit the entry." 20 50
 
@@ -139,8 +137,8 @@ function readOrWriteADay(){
 		dialog --clear  --backtitle $appName --title "Information" --msgbox "Entry exists. You can read and edit the entry." 20 50
 		
 		file="$dayToRead-$monthToRead-$yearToRead-Journal.txt"
-
-		dialog --backtitle $appName --title "$dayToRead/$monthToRead/$yearToRead" --editbox "$file" 50 80 2> $file
+		cat $file > $result
+		dialog --backtitle $appName --title "$dayToRead/$monthToRead/$yearToRead" --editbox $result 50 50 2> $file
 		dialog --clear  --backtitle $appName --title "$dayToRead/$monthToRead/$yearToRead" --msgbox "Saved on $file" 20 50
 	else
 		dialog --clear  --backtitle $appName --title "Information" --msgbox "Entery doesn't exist. Creating one." 20 50
