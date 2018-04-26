@@ -15,36 +15,10 @@ function finisher(){
 }
 
 function writeForToday(){
-	day=$(date | awk '{print $3;}' )
-	month=$(LANG=en_us_88591; date +"%b")
-	year=$(date| awk '{print $6;}' ) 
+	day=`date +%d`
+	month=`date +%m`
+	year=`date +%y`
        
-	if [[ $month == "Jan" ]] 
-	then month=1
-	elif [[ $month == "Fan" ]] 
-	then month=2
-	elif [[ $month == "Man" ]] 
-	then month=3
-	elif [[ $month == "Apr" ]] 
-	then month=4
-	elif [[ $month == "May" ]] 
-	then month=5
-	elif [[ $month == "Jun" ]] 
-	then month=6
-	elif [[ $month == "Jul" ]] 
-	then month=7
-	elif [[ $month == "Aug" ]] 
-	then month=8
-	elif [[ $month == "Sep" ]] 
-	then month=9
-	elif [[ $month == "Oct" ]] 
-	then month=10
-	elif [[ $month == "Nov" ]] 
-	then month=11
-	elif [[ $month == "Dec" ]] 
-	then month=12 
-	fi
-
 	entryFile="$day-$month-$year-Journal.txt"
 	> $entryFile
 	dialog --clear  --backtitle $appName --title "$day/$month/$year" --editbox $entryFile 80 80   2> $entryFile
