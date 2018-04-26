@@ -17,7 +17,7 @@ function finisher(){
 function writeForToday(){
 	day=`date +%d`
 	month=`date +%b`
-	year=`date +%y`
+	year=`date +%Y`
        
 	entryFile="$day-$month-$year-Journal.txt"
 	> $entryFile
