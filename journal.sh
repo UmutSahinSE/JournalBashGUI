@@ -3,20 +3,20 @@
 profileName=""
 profilePassword=""
 authenticationFlag=0
-result=$(mktemp /tmp/result.XXXXXX)
+result=$(mktemp /tmp/result.XXXXXX) #tempfile to keep results received from user.
 
 function finisher(){
 	if [[ $authenticationFlag == 1 ]]
 	then
-	zip -P $profilePassword $profileName.zip *-Journal.txt 
+	zip -P $profilePassword $profileName.zip *-Journal.txt #Put every entry back to user's zip
 	fi
-	rm *\-Journal.txt 
+	rm *\-Journal.txt #Deleting all entries left outside user's zip 
 	exit 0
 }
 
 function writeForToday(){
 	day=$(date | awk '{print $3;}' )
-	month=$(LANG=en_us_88591; date +"%b")
+	month=$(LANG=en_us_88591; date +"%b") #To have english months
 	year=$(date| awk '{print $6;}' ) 
        
 	if [[ $month == "Jan" ]] 
@@ -68,7 +68,7 @@ function readOrWriteADay(){
 		then finisher
 		else continue
 		fi
-	elif (( $dayToRead < 1 || $dayToRead > 31 ))
+	elif (( $dayToRead < 1 || $dayToRead > 31 )) 
 	then
 		dialog --clear  --backtitle $appName --title "Problem"  --yesno "Entry must be between 1-31, try again?" 20 50 2> $result
 		if [[ $? == 1  ]]
@@ -93,7 +93,7 @@ function readOrWriteADay(){
 	       then finisher
 	       else continue
 	       fi
-	elif (( $dayToRead == 30 && $monthToRead == 2 ))
+	elif (( $dayToRead >= 30 && $monthToRead == 2 )) #if month is february and user gives day more than 29 
 	then
 		dialog --clear  --backtitle $appName --title "Problem"  --yesno "Day for February can be 29 at most, try again?" 20 50 2> $result
 		if [[ $? == 1  ]]
@@ -102,7 +102,7 @@ function readOrWriteADay(){
 		fi
 	elif (( $dayToRead == 31 ))
 	then 
-		if (( $monthToRead == 2 ||$monthToRead == 4 || $monthToRead == 6 || $monthToRead == 9 || $monthToRead == 11 ))
+		if (( $monthToRead == 2 ||$monthToRead == 4 || $monthToRead == 6 || $monthToRead == 9 || $monthToRead == 11 )) #months with 30 days
 		then
 			dialog --clear  --backtitle $appName --title "Problem"  --yesno "You chose day 31 for a non 31 length month, try again?" 20 50 2> $result
 			if [[ $? == 1  ]]
@@ -156,7 +156,7 @@ function createProfile(){
 		profileName=$(cat $result)
 		if ! [[ $profileName =~ ^[a-zA-Z]+$ ]]
 		then
-			dialog --clear  --backtitle $appName --title "Problem"  --yesno "Please only use letters a-z without spaces or special characters, try again?" 20 50 2> $result
+			dialog --clear  --backtitle $appName --title "Problem"  --yesno "Please only use letters a-z (english characters)  without spaces or special characters, try again?" 20 50 2> $result
 			if [[ $? == 1  ]]
 			then finisher 
 			fi
@@ -168,7 +168,7 @@ function createProfile(){
 	while true
 	do
 		dialog --clear  --backtitle $appName --title "Create Profile" --passwordbox "Your Password" 20 50 2> $result
-		if ! [[ $profileName =~ ^$ ]]
+		if ! [[ $(cat $result) =~ ^$ ]]
 		then break
 		fi
 	done
@@ -194,9 +194,9 @@ function prepareProfile(){
 	do
 		dialog --clear  --backtitle $appName --title "Access Profile" --passwordbox "Your Password" 20 50 2> $result
 		profilePassword=$(cat $result)
-		unzip -uP $profilePassword $profileName.zip
+		unzip -uP $profilePassword $profileName.zip #unzipping to have all files outside and working with them easily
 		file=("./*Journal.txt")	
-		if ls ./*-Journal.txt >&1; 
+		if ls ./*-Journal.txt >&1; #if any entry did came out from zip
 		then 
 			break
 		else    
@@ -211,7 +211,7 @@ function prepareProfile(){
 
 appName="Journal"
 
-rm *\-Journal.txt
+rm *\-Journal.txt #removing all entries, just to be sure there isn't any left 
 
 dialog --clear  --backtitle $appName --title "Accessing Profile" --menu "Options" 20 50 3 1 "Already Existing Profile" 2 "New Profile" 3 "Exit" 2> $result
 menuitem=$(cat $result)
